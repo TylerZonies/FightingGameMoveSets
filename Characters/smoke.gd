@@ -55,7 +55,8 @@ func get_input(delta):
 		
 
 func apply_gravity():
-	if !check_on_floor():
+	#if !check_on_floor():
+	if !is_on_floor():
 		velocity.y += fall_speed
 
 func jump(full = true):

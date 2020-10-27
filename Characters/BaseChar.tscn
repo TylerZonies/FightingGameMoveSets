@@ -18,8 +18,9 @@ animations = [ {
 "speed": 5.0
 } ]
 
-[sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 16.0454, 3.60931 )
+[sub_resource type="CapsuleShape2D" id=2]
+radius = 14.7472
+height = 33.8811
 
 [node name="T-Bone" type="KinematicBody2D"]
 collision_mask = 14
@@ -39,7 +40,6 @@ texture = ExtResource( 1 )
 script = ExtResource( 2 )
 
 [node name="FeetBox" type="CollisionShape2D" parent="."]
-position = Vector2( 0, 28.332 )
 shape = SubResource( 2 )
 
 [node name="FloorRaycasts" type="Node2D" parent="."]
