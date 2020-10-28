@@ -4,6 +4,7 @@ var current_move_direction = 1
 var turn_lerp = 0.2
 var buffer_dash = false
 var remaining_jumps
+var jump_ff = false
 
 func _ready():
 	add_state('idle')
@@ -25,26 +26,31 @@ func _ready():
 
 func _state_logic(delta):
 	if state == states.jump or state == states.fall:
-		parent.apply_gravity()
+		parent.apply_gravity(delta)
 		if parent.x_direction != 0:
 			parent.velocity.x = lerp(parent.velocity.x, parent.max_speed * parent.x_direction, parent.air_lerp)
 		if remaining_jumps > 0 and parent.y_direction == 1:
 				remaining_jumps -= 1
-				parent.jump()
+				parent.jump(delta)
 				if parent.x_direction != 0:
 					parent.velocity.x = parent.max_speed * parent.x_direction
 		#if parent.velocity.x < parent.max_speed * parent.x_direction:
 		#	parent.velocity.x += parent.air_speed * parent.x_direction
 	elif parent.y_direction == 1:
 		if parent.short_hop_timer.is_stopped():
-			parent.jump()
+			parent.jump(delta)
 		else:
-			parent.jump(false)
+			parent.jump(delta, false)
 	match state:
 		states.idle:
 			parent.velocity.x = 0
 			
-			
+		states.fall:
+			if parent.y_direction == -1 or jump_ff:
+				parent.fast_fall = true
+		states.jump:
+			if parent.y_direction == -1:
+				jump_ff = true
 		states.dash:
 			parent.sprite.flip_h = current_move_direction == -1
 			#parent.move(current_move_direction, delta)*
@@ -117,7 +123,8 @@ func _get_transition(delta):
 			if parent.velocity.y >= 0:
 				return states.fall
 		states.fall:
-			if parent.check_on_floor():
+			#if parent.check_on_floor():
+			if parent.is_on_floor():
 				return states.land
 		states.land:
 			if parent.check_on_floor():
@@ -224,6 +231,8 @@ func _enter_state(old_state, new_state):
 		states.land:
 			remaining_jumps = parent.jumps
 			parent.velocity.y = 0
+			parent.fast_fall = false
+			jump_ff = false
 		states.jump:
 			parent.short_hop_timer.stop()
 			parent.label.text = 'jump'

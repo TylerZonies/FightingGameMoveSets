@@ -19,7 +19,7 @@ script = ExtResource( 3 )
 
 [node name="T-Bone" parent="." instance=ExtResource( 1 )]
 position = Vector2( 376, 544 )
-fall_speed = 150
+fast_fall_speed = 2600
 
 [node name="Floor" type="StaticBody2D" parent="."]
 position = Vector2( 255.431, 840 )
@@ -83,4 +83,13 @@ script = ExtResource( 4 )
 
 [node name="Spawn" type="Position2D" parent="."]
 position = Vector2( 511.431, 544 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 173.374
+margin_top = 124.673
+margin_right = 213.374
+margin_bottom = 138.673
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="body_entered" from="death_zone" to="T-Bone" method="_on_death_zone_body_entered"]
