@@ -1,6 +1,7 @@
 extends Node2D
 
 onready var spawn = $Spawn
+onready var label = $Label
 # Declare member variables here. Examples:
 # var a = 2
 # var b = "text"

@@ -25,6 +25,7 @@ height = 33.8811
 [node name="T-Bone" type="KinematicBody2D"]
 collision_mask = 14
 script = ExtResource( 3 )
+fast_fall_speed = 6000
 ground_speed = 800
 max_speed = 800
 

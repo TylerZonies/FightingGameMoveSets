@@ -1,7 +1,8 @@
 extends KinematicBody2D
 
 export (int) var weight = 1200
-export (int) var fall_speed = 200
+export (int) var fall_speed = 2000
+export (int) var fast_fall_speed = 12000
 export (int) var air_speed = 200
 export (int) var ground_speed = 100
 export (int) var max_speed = ground_speed
@@ -19,18 +20,24 @@ onready var idle_buffer_timer = $IdleBufferTimer/
 onready var short_hop_timer = $ShortHopTimer
 onready var stage = get_parent()
 
+
 var velocity = Vector2(0,0)
 var stick_buffer = []
 var x_direction = 0
 var y_direction = 0
 var jump_pressed = false
-
+var fast_fall = false
+var count = 0
 
 const UP = Vector2(0,-1)
 
 
 func _physics_process(delta):
 	#apply_gravity()
+	count += 1
+	if count >= 10:
+		count = 0
+		stage.label.text = 'velocity.y = ' + str(velocity.y) + '  ' + 'fall_speed = ' + str(fall_speed)
 	get_input(delta)
 	move_and_slide(velocity, UP)
 
@@ -54,16 +61,22 @@ func get_input(delta):
 		set_fall_through_platform(true)
 		
 
-func apply_gravity():
+func apply_gravity(delta):
 	#if !check_on_floor():
 	if !is_on_floor():
-		velocity.y += fall_speed
+		if velocity.y >= -500:
+			if fast_fall:
+				velocity.y = lerp(velocity.y, fast_fall_speed, .9)
+			else:
+				velocity.y = lerp(velocity.y, fall_speed, 0.1)
+		else: 
+			velocity.y = lerp(velocity.y, 0, 0.1) #* delta
 
-func jump(full = true):
+func jump(delta, full = true):
 	if full:
-		velocity.y = -jump_speed
+		velocity.y = -jump_speed #* delta
 	else:
-		velocity.y = -short_hop_speed
+		velocity.y = -short_hop_speed #* delta
 
 func move(direction, delta):
 	velocity.x = ground_speed * direction * delta
